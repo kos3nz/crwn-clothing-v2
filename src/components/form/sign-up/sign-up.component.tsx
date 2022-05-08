@@ -102,9 +102,7 @@ const Signup = ({}: SignupProps) => {
           value={confirmPassword}
         />
 
-        <Button type="submit" buttonType="google-sign-in">
-          Sign Up
-        </Button>
+        <Button type="submit">Sign Up</Button>
       </form>
     </div>
   );
