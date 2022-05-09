@@ -6,7 +6,7 @@ const FormInput = ({ label, ...props }: FormInputProps) => {
       <input className="form-input" {...props} />
       {label && (
         <label
-          htmlFor={props.id}
+          htmlFor={props.id || ''}
           className={`${
             typeof props.value === 'string' && props.value.length && 'shrink'
           } form-input-label`}

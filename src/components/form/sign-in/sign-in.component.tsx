@@ -10,8 +10,11 @@ import {
   signInAuthUserWithEmailAndPassword,
   signInWithGooglePopup,
 } from 'utils/firebase/firebase.utils';
+import { useUserContext } from 'context/user.context';
 
 const Signin = ({}: SigninProps) => {
+  const { setCurrentUser } = useUserContext();
+
   const [formField, setFormField] = useState(defaultFormFields);
   const { email, password } = formField;
 
@@ -30,9 +33,11 @@ const Signin = ({}: SigninProps) => {
         password
       );
 
-      console.log(response);
+      if (response) {
+        setCurrentUser(response.user);
 
-      resetFormFields();
+        resetFormFields();
+      }
     } catch (err) {
       const error = err as Error | FirebaseError;
 
@@ -74,7 +79,7 @@ const Signin = ({}: SigninProps) => {
           label="Email"
           type="email"
           name="email"
-          id="email"
+          id="signinEmail"
           required
           onChange={handleChange}
           value={email}
@@ -83,7 +88,7 @@ const Signin = ({}: SigninProps) => {
           label="Password"
           type="password"
           name="password"
-          id="password"
+          id="signinPassword"
           required
           autoComplete="off"
           onChange={handleChange}
