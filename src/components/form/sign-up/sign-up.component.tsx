@@ -8,11 +8,8 @@ import {
 import FormInput from 'components/form/input/input.component';
 import Button from 'components/button/button.component';
 import './sign-up.styles.scss';
-import { useUserContext } from 'context/user.context';
 
 const Signup = ({}: SignupProps) => {
-  const { setCurrentUser } = useUserContext();
-
   const [formField, setFormField] = useState(defaultFormFields);
   const { displayName, email, password, confirmPassword } = formField;
 
@@ -38,8 +35,6 @@ const Signup = ({}: SignupProps) => {
 
       if (response) {
         await createUserDocumentFromAuth(response.user, { displayName });
-
-        setCurrentUser(response.user);
 
         resetFormFields();
       }

@@ -11,8 +11,9 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  onAuthStateChanged,
 } from 'firebase/auth';
-import type { User } from 'firebase/auth';
+import type { User, NextOrObserver } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
@@ -93,6 +94,9 @@ export const signInAuthUserWithEmailAndPassword = async (
 };
 
 export const signOutUser = async () => await signOut(auth);
+
+export const onAuthStateChangedListener = (callback: NextOrObserver<User>) =>
+  onAuthStateChanged(auth, callback);
 
 /* Types */
 type AdditionalInformation = {

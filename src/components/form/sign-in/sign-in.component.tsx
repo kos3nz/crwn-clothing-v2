@@ -6,15 +6,11 @@ import Button from 'components/button/button.component';
 import './sign-in.styles.scss';
 
 import {
-  createUserDocumentFromAuth,
   signInAuthUserWithEmailAndPassword,
   signInWithGooglePopup,
 } from 'utils/firebase/firebase.utils';
-import { useUserContext } from 'context/user.context';
 
 const Signin = ({}: SigninProps) => {
-  const { setCurrentUser } = useUserContext();
-
   const [formField, setFormField] = useState(defaultFormFields);
   const { email, password } = formField;
 
@@ -34,8 +30,6 @@ const Signin = ({}: SigninProps) => {
       );
 
       if (response) {
-        setCurrentUser(response.user);
-
         resetFormFields();
       }
     } catch (err) {
@@ -61,8 +55,7 @@ const Signin = ({}: SigninProps) => {
   };
 
   const signinWithGoogle = async () => {
-    const response = await signInWithGooglePopup();
-    await createUserDocumentFromAuth(response.user);
+    await signInWithGooglePopup();
   };
 
   const resetFormFields = () => {
