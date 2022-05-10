@@ -7,12 +7,12 @@ import './cart-icon.styles.scss';
 export type CartIconProps = {};
 
 const CartIcon = ({}: CartIconProps) => {
-  const { toggleDropdown } = useCartContext();
+  const { toggleDropdown, cartCount } = useCartContext();
 
   return (
     <button className="cart-icon-container" onClick={toggleDropdown}>
       <ShoppingIcon className="shopping-icon" />
-      <span className="item-count">0</span>
+      <span className="item-count">{cartCount}</span>
     </button>
   );
 };
