@@ -13,12 +13,33 @@ const useProviderValue = () => {
     setCartItems(addCartItem(cartItems, product));
   };
 
+  const removeItemFromCart = (product: Product) => {
+    setCartItems(removeCartItem(cartItems, product));
+  };
+
+  const clearItemFromCart = (product: Product) => {
+    setCartItems(clearCartItem(cartItems, product));
+  };
+
   const cartCount = cartItems.reduce((total, item) => {
     return total + item.quantity;
   }, 0);
 
+  const totalPrice = cartItems.reduce((total, item) => {
+    return total + item.price * item.quantity;
+  }, 0);
+
   const value = useMemo(
-    () => ({ cartItems, isCartOpen, toggleDropdown, addItemToCart, cartCount }),
+    () => ({
+      cartItems,
+      isCartOpen,
+      toggleDropdown,
+      addItemToCart,
+      removeItemFromCart,
+      clearItemFromCart,
+      cartCount,
+      totalPrice,
+    }),
     [cartItems, isCartOpen]
   );
 
@@ -57,7 +78,7 @@ const addCartItem = (
   cartItems: CartItemType[],
   product: Product
 ): CartItemType[] => {
-  const existingCartItem = cartItems.find((item) => item.id === product.id);
+  const existingCartItem = hasCartItem(cartItems, product);
 
   if (existingCartItem) {
     return cartItems.map((item) =>
@@ -66,4 +87,24 @@ const addCartItem = (
   }
 
   return [...cartItems, { ...product, quantity: 1 }];
+};
+
+const removeCartItem = (cartItems: CartItemType[], product: Product) => {
+  const existingCartItem = hasCartItem(cartItems, product);
+
+  if (existingCartItem && existingCartItem.quantity > 1) {
+    return cartItems.map((item) =>
+      item.id === product.id ? { ...item, quantity: item.quantity - 1 } : item
+    );
+  }
+
+  return clearCartItem(cartItems, product);
+};
+
+const hasCartItem = (cartItems: CartItemType[], product: Product) => {
+  return cartItems.find((item) => item.id === product.id);
+};
+
+const clearCartItem = (cartItems: CartItemType[], product: Product) => {
+  return cartItems.filter((item) => item.id !== product.id);
 };
