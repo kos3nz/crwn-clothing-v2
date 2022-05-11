@@ -1,6 +1,6 @@
 import Button from 'components/button/button.component';
 import { useCartContext } from 'context/cart.context';
-import type { Product } from 'context/products.context';
+import type { Product } from 'context/categories.context';
 
 import './product-card.styles.scss';
 

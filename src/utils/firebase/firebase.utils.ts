@@ -14,7 +14,16 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth';
 import type { User, NextOrObserver } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  writeBatch,
+  query,
+  getDocs,
+} from 'firebase/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -29,19 +38,20 @@ const firebaseConfig = {
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 
+export const auth = getAuth(firebaseApp);
+
+export const db = getFirestore(firebaseApp);
+
 const googleProvider = new GoogleAuthProvider();
 
 googleProvider.setCustomParameters({
   prompt: 'select_account',
 });
 
-export const auth = getAuth(firebaseApp);
 export const signInWithGooglePopup = () =>
   signInWithPopup(auth, googleProvider);
 export const signInWithGoogleRedirect = () =>
   signInWithRedirect(auth, googleProvider);
-
-export const db = getFirestore(firebaseApp);
 
 export const createUserDocumentFromAuth = async (
   userAuth: User,
@@ -98,7 +108,44 @@ export const signOutUser = async () => await signOut(auth);
 export const onAuthStateChangedListener = (callback: NextOrObserver<User>) =>
   onAuthStateChanged(auth, callback);
 
+export const getCategoriesAndDocuments = async () => {
+  const collectionRef = collection(db, 'categories');
+
+  // Create a query against the collection.
+  const q = query(collectionRef); // ex. const q = query(citiesRef, where("state", "==", "CA"));
+
+  // Execute a query
+  const querySnapshot = await getDocs(q);
+
+  return querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
+};
+
+/* Data Seeding */
+export const addCollectionAndDocuments = async <T extends Data>(
+  collectionKey: string,
+  shopData: T[]
+) => {
+  const collectionRef = collection(db, collectionKey);
+
+  const batch = writeBatch(db);
+
+  shopData.forEach((object) => {
+    const docRef = doc(collectionRef, object.title.toLowerCase());
+    batch.set(docRef, object);
+  });
+
+  await batch.commit();
+  console.log('done');
+};
+/*
+addCollectionAndDocuments('categories', SHOP_DATA)
+*/
+
 /* Types */
 type AdditionalInformation = {
   displayName?: string;
+};
+
+type Data = {
+  title: string;
 };

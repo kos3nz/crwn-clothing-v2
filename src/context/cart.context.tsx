@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, useState } from 'react';
-import type { Product } from './products.context';
+import type { Product } from './categories.context';
 
 const useProviderValue = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
