@@ -1,55 +1,105 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { useReducer } from 'react';
+import { createContext, useContext } from 'react';
 import type { Product } from './categories.context';
+import { createAction } from 'utils/reducer/reducer.utils';
 
 const useProviderValue = () => {
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState<CartItemType[]>([]);
+  const [{ cartItems, isCartOpen, cartCount, totalPrice }, dispatch] =
+    useReducer(cartReducer, INITIAL_STATE);
 
   const toggleDropdown = () => {
-    setIsCartOpen((isOpen) => !isOpen);
+    dispatch(createAction(CART_ACTION_TYPES.TOGGLE_CART_DROPDOWN));
+  };
+
+  const updateCartItemsReducer = (newCartItems: CartItemType[]) => {
+    const newCartCount = newCartItems.reduce((total, item) => {
+      return total + item.quantity;
+    }, 0);
+
+    const newTotalPrice = newCartItems.reduce((total, item) => {
+      return total + item.price * item.quantity;
+    }, 0);
+
+    dispatch(
+      createAction(CART_ACTION_TYPES.SET_CART_ITEMS, {
+        cartItems: newCartItems,
+        cartCount: newCartCount,
+        totalPrice: newTotalPrice,
+      })
+    );
   };
 
   const addItemToCart = (product: Product) => {
-    setCartItems(addCartItem(cartItems, product));
+    const newCartItems = addCartItem(cartItems, product);
+    updateCartItemsReducer(newCartItems);
   };
 
   const removeItemFromCart = (product: Product) => {
-    setCartItems(removeCartItem(cartItems, product));
+    const newCartItems = removeCartItem(cartItems, product);
+    updateCartItemsReducer(newCartItems);
   };
 
   const clearItemFromCart = (product: Product) => {
-    setCartItems(clearCartItem(cartItems, product));
+    const newCartItems = clearCartItem(cartItems, product);
+    updateCartItemsReducer(newCartItems);
   };
 
-  const cartCount = cartItems.reduce((total, item) => {
-    return total + item.quantity;
-  }, 0);
-
-  const totalPrice = cartItems.reduce((total, item) => {
-    return total + item.price * item.quantity;
-  }, 0);
-
-  const value = useMemo(
-    () => ({
-      cartItems,
-      isCartOpen,
-      toggleDropdown,
-      addItemToCart,
-      removeItemFromCart,
-      clearItemFromCart,
-      cartCount,
-      totalPrice,
-    }),
-    [cartItems, isCartOpen]
-  );
-
-  return value;
+  return {
+    cartItems,
+    isCartOpen,
+    cartCount,
+    totalPrice,
+    addItemToCart,
+    removeItemFromCart,
+    clearItemFromCart,
+    toggleDropdown,
+  };
 };
 
+/* State */
+export const INITIAL_STATE = {
+  cartItems: [],
+  isCartOpen: false,
+  cartCount: 0,
+  totalPrice: 0,
+};
+
+/* Action */
+export const CART_ACTION_TYPES = {
+  TOGGLE_CART_DROPDOWN: 'TOGGLE_CART_DROPDOWN',
+  SET_CART_ITEMS: 'SET_CART_ITEMS',
+} as const;
+
+/* Context */
 export const CartContext = createContext<CartContextType | undefined>(
   undefined
 );
 
+/* Reducer */
+const cartReducer = (state: CartState, action: CartAction) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case CART_ACTION_TYPES.TOGGLE_CART_DROPDOWN: {
+      return {
+        ...state,
+        isCartOpen: !state.isCartOpen,
+      };
+    }
+    case CART_ACTION_TYPES.SET_CART_ITEMS: {
+      return {
+        ...state,
+        ...payload,
+      };
+    }
+
+    default: {
+      throw new Error(`Unhandled type ${type} in cartReducer`);
+    }
+  }
+};
+
+/* Provider */
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const value = useProviderValue();
 
@@ -65,13 +115,6 @@ export const useCartContext = () => {
 
   return context;
 };
-
-/* Types */
-type CartContextType = ReturnType<typeof useProviderValue>;
-
-export type CartItemType = {
-  quantity: number;
-} & Product;
 
 /* Helper functions */
 const addCartItem = (
@@ -107,4 +150,29 @@ const hasCartItem = (cartItems: CartItemType[], product: Product) => {
 
 const clearCartItem = (cartItems: CartItemType[], product: Product) => {
   return cartItems.filter((item) => item.id !== product.id);
+};
+
+/* Types */
+type CartContextType = ReturnType<typeof useProviderValue>;
+
+export type CartItemType = {
+  quantity: number;
+} & Product;
+
+type CartState = {
+  cartItems: CartItemType[];
+  isCartOpen: boolean;
+  cartCount: number;
+  totalPrice: number;
+};
+
+type CartAction = {
+  type: keyof typeof CART_ACTION_TYPES;
+  payload?: SetCartItemsPayload;
+};
+
+type SetCartItemsPayload = {
+  cartItems: CartItemType[];
+  cartCount: number;
+  totalPrice: number;
 };
