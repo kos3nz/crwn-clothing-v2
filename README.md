@@ -3,9 +3,12 @@
 Recreating Crwn Clothing App with
 
 - Vite
+
 - React v18
 - React Router v6
-- Vanilla Extract CSS
+- Redux Toolkit
+- Redux Saga
+- Scss
 - Typescript
 
 - Netlify

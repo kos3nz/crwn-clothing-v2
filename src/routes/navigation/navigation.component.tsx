@@ -1,17 +1,18 @@
 import { Link, Outlet } from 'react-router-dom';
-import { ReactComponent as CrwnLogo } from 'assets/crown.svg';
 
+import { ReactComponent as CrwnLogo } from 'assets/crown.svg';
 import CartIcon from 'components/cart-icon/cart-icon.component';
 import CartDropdown from 'components/cart-dropdown/cart-dropdown.component';
-import { useUserContext } from 'context/user.context';
-import { useCartContext } from 'context/cart.context';
 import { signOutUser } from 'utils/firebase/firebase.utils';
+import { useAppSelector } from 'store/hooks';
+import { selectCurrentUser } from 'store/user/user.selectors';
+import { selectIsCartOpen } from 'store/cart/cart.selectors';
 
 import './navigation.styles.scss';
 
 const Navigation = ({}: NavigationProps) => {
-  const { currentUser } = useUserContext();
-  const { isCartOpen } = useCartContext();
+  const currentUser = useAppSelector(selectCurrentUser);
+  const isCartOpen = useAppSelector(selectIsCartOpen);
 
   return (
     <>

@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { type Product, useCategoriesContext } from 'context/categories.context';
 
 import './category.styles.scss';
 import ProductCard from 'components/product-card/product-card.component';
+import { useAppSelector } from 'store/hooks';
+import { selectCategoriesMap } from 'store/categories/categories.selectors';
+import { Product } from 'store/categories/categories.slice';
 
 const Category = ({}: CategoryProps) => {
   const { category } = useParams() as CategoryRouteParams;
-  const { categoriesMap } = useCategoriesContext();
+  const categoriesMap = useAppSelector(selectCategoriesMap);
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {

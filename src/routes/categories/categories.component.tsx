@@ -1,8 +1,9 @@
 import CategoryPreview from 'components/category-preview/category-preview.component';
-import { useCategoriesContext } from 'context/categories.context';
+import { selectCategoriesMap } from 'store/categories/categories.selectors';
+import { useAppSelector } from 'store/hooks';
 
 const Categories = ({}: CategoriesProps) => {
-  const { categoriesMap } = useCategoriesContext();
+  const categoriesMap = useAppSelector(selectCategoriesMap);
 
   return (
     <div className="categories-container">

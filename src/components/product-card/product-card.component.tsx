@@ -1,14 +1,15 @@
 import Button from 'components/button/button.component';
-import { useCartContext } from 'context/cart.context';
-import type { Product } from 'context/categories.context';
+import { useAppDispatch } from 'store/hooks';
+import { addItemToCart } from 'store/cart/cart.slice';
+import type { Product } from 'store/categories/categories.slice';
 
 import './product-card.styles.scss';
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const { name, price, imageUrl } = product;
-  const { addItemToCart } = useCartContext();
+  const dispatch = useAppDispatch();
 
-  const addProductToCart = () => addItemToCart(product);
+  const addProductToCart = () => dispatch(addItemToCart(product));
 
   return (
     <div className="product-card-container">
@@ -26,7 +27,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
 export default ProductCard;
 
-// Types
+/* Types */
 export type ProductCardProps = {
   product: Product;
 };
