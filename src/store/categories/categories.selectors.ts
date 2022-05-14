@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { RootState } from 'store/store';
-import { CategoryMap } from './categories.slice';
+import categoriesSlice, { CategoryMap } from './categories.slice';
 
 const selectCategoriesReducer = (state: RootState) => state.categories;
 
@@ -18,4 +18,14 @@ export const selectCategoriesMap = createSelector(
       return acc;
     }, {});
   }
+);
+
+export const selectCategoriesIsLoading = createSelector(
+  [selectCategoriesReducer],
+  (categoriesSlice) => categoriesSlice.isLoading
+);
+
+export const selectCategoriesError = createSelector(
+  [selectCategoriesReducer],
+  (categoriesSlice) => categoriesSlice.error
 );

@@ -108,8 +108,8 @@ export const signOutUser = async () => await signOut(auth);
 export const onAuthStateChangedListener = (callback: NextOrObserver<User>) =>
   onAuthStateChanged(auth, callback);
 
-export const getCategoriesAndDocuments = async () => {
-  const collectionRef = collection(db, 'categories');
+export const getDocuments = async (title: string) => {
+  const collectionRef = collection(db, title);
 
   // Create a query against the collection.
   const q = query(collectionRef); // ex. const q = query(citiesRef, where("state", "==", "CA"));
