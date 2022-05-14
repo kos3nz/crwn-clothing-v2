@@ -1,4 +1,6 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
 import middlewares from './middlewares';
 import userReducer from './user/user.slice';
@@ -11,8 +13,16 @@ export const rootReducer = combineReducers({
   cart: cartReducer,
 });
 
+const persistConfig = {
+  key: 'root',
+  storage,
+  blacklist: ['user'],
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
       // serializableCheck: { ignoredActions: ['user/setCurrentUser'] },
@@ -20,6 +30,8 @@ export const store = configureStore({
     }).concat(middlewares);
   },
 });
+
+export const persistor = persistStore(store);
 
 /* Types */
 export type RootState = ReturnType<typeof store.getState>;
