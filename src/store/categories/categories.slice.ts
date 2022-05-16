@@ -11,21 +11,21 @@ const INITIAL_STATE: CategoriesState = {
 
 /* Action Types */
 export const CATEGORIES_ACTION_TYPES = {
-  GET_CATEGORIES_FETCH: 'categories/getCategoriesFetch',
+  GET_CATEGORIES: 'categories/getCategories',
 } as const;
 
 /* Async Thunk Functions */
 export const fetchCategoriesAsync = createAsyncThunk<
   CategoryArray,
   undefined,
-  { rejectValue: FirebaseError }
+  { rejectValue: FirebaseError | Error }
 >('categories/fetchCategoriesAsync', async (_, { rejectWithValue }) => {
   try {
     const categories = await getDocuments('categories');
 
     return categories as CategoryArray;
   } catch (error) {
-    return rejectWithValue(error as FirebaseError);
+    return rejectWithValue(error as FirebaseError | Error);
   }
 });
 
@@ -35,7 +35,7 @@ const CategoriesSlice = createSlice({
   initialState: INITIAL_STATE,
   // Saga Code
   reducers: {
-    getCategoriesFetch: (state) => {
+    getCategories: (state) => {
       state.isLoading = true;
     },
     getCategoriesSuccess: (state, action: PayloadAction<CategoryArray>) => {
@@ -43,7 +43,10 @@ const CategoriesSlice = createSlice({
       state.isLoading = false;
       state.error = undefined;
     },
-    getCategoriesFailure: (state, action: PayloadAction<FirebaseError>) => {
+    getCategoriesFailure: (
+      state,
+      action: PayloadAction<FirebaseError | Error>
+    ) => {
       state.isLoading = false;
       state.error = action.payload;
     },
@@ -72,11 +75,8 @@ const CategoriesSlice = createSlice({
   },
 });
 
-export const {
-  getCategoriesFetch,
-  getCategoriesSuccess,
-  getCategoriesFailure,
-} = CategoriesSlice.actions;
+export const { getCategories, getCategoriesSuccess, getCategoriesFailure } =
+  CategoriesSlice.actions;
 
 export default CategoriesSlice.reducer;
 
@@ -85,7 +85,7 @@ export default CategoriesSlice.reducer;
 export type CategoriesState = {
   categories: CategoryArray;
   isLoading: boolean;
-  error: FirebaseError | undefined;
+  error: Error | FirebaseError | undefined;
 };
 
 export type CategoryArray = Category[];

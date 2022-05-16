@@ -54,18 +54,18 @@ export const signInWithGoogleRedirect = () =>
   signInWithRedirect(auth, googleProvider);
 
 export const createUserDocumentFromAuth = async (
-  userAuth: User,
+  user: User,
   additionalInformation: AdditionalInformation = {}
 ) => {
-  if (!userAuth) return;
+  if (!user) return;
 
-  const userDocRef = doc(db, 'users', userAuth.uid);
+  const userDocRef = doc(db, 'users', user.uid);
 
   const userSnapshot = await getDoc(userDocRef);
 
-  // if user data does not exist, create / set the document with the data from userAuth in my collection
+  // if user data does not exist, create / set the document with the data from user in my collection
   if (!userSnapshot.exists()) {
-    const { displayName, email } = userAuth;
+    const { displayName, email } = user;
     const createdAt = new Date();
 
     try {
@@ -78,11 +78,11 @@ export const createUserDocumentFromAuth = async (
     } catch (err) {
       const error = err as Error | FirebaseError;
       console.log('Error creating the user', error.message);
+      throw error;
     }
   }
 
-  // if user data exists, return userDocRef
-  return userDocRef;
+  return userSnapshot;
 };
 
 export const createAuthUserWithEmailAndPassword = async (
@@ -120,6 +120,19 @@ export const getDocuments = async (title: string) => {
   return querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
 };
 
+export const getCurrentUser = (): Promise<User | null> => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (user) => {
+        unsubscribe();
+        resolve(user);
+      },
+      reject
+    );
+  });
+};
+
 /* Data Seeding */
 export const addCollectionAndDocuments = async <T extends Data>(
   collectionKey: string,
@@ -142,10 +155,16 @@ addCollectionAndDocuments('categories', SHOP_DATA)
 */
 
 /* Types */
-type AdditionalInformation = {
+export type AdditionalInformation = {
   displayName?: string;
 };
 
 type Data = {
   title: string;
+};
+
+export type UserData = {
+  displayName: string;
+  email: string;
+  createdAt: Date;
 };

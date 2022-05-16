@@ -3,14 +3,14 @@ import { Routes, Route } from 'react-router-dom';
 
 import Categories from 'routes/categories/categories.component';
 import Category from 'routes/category/category.component';
-import { getCategoriesFetch } from 'store/categories/categories.slice';
+import { getCategories } from 'store/categories/categories.slice';
 import { useAppDispatch } from 'store/hooks';
 
 const Shop = ({}: ShopProps) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getCategoriesFetch());
+    dispatch(getCategories());
   }, []);
 
   return (

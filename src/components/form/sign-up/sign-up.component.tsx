@@ -1,15 +1,16 @@
 import { FirebaseError } from 'firebase/app';
 import { useState } from 'react';
-import {
-  createAuthUserWithEmailAndPassword,
-  createUserDocumentFromAuth,
-} from 'utils/firebase/firebase.utils';
 
 import FormInput from 'components/form/input/input.component';
 import Button from 'components/button/button.component';
+import { useAppDispatch } from 'store/hooks';
+import { signUp } from 'store/user/user.slice';
+
 import './sign-up.styles.scss';
 
-const Signup = ({}: SignupProps) => {
+const Signup = () => {
+  const dispatch = useAppDispatch();
+
   const [formField, setFormField] = useState(defaultFormFields);
   const { displayName, email, password, confirmPassword } = formField;
 
@@ -28,16 +29,15 @@ const Signup = ({}: SignupProps) => {
     }
 
     try {
-      const response = await createAuthUserWithEmailAndPassword(
-        email,
-        password
+      dispatch(
+        signUp({
+          email: email.trim(),
+          password: password.trim(),
+          displayName: displayName.trim(),
+        })
       );
 
-      if (response) {
-        await createUserDocumentFromAuth(response.user, { displayName });
-
-        resetFormFields();
-      }
+      resetFormFields();
     } catch (err) {
       const error = err as Error | FirebaseError;
       if (
@@ -109,9 +109,6 @@ const Signup = ({}: SignupProps) => {
 };
 
 export default Signup;
-
-// Types
-export type SignupProps = {};
 
 // Value
 const defaultFormFields = {
