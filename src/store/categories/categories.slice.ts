@@ -9,7 +9,12 @@ const INITIAL_STATE: CategoriesState = {
   error: undefined,
 };
 
-/* Async Functions */
+/* Action Types */
+export const CATEGORIES_ACTION_TYPES = {
+  GET_CATEGORIES_FETCH: 'categories/getCategoriesFetch',
+} as const;
+
+/* Async Thunk Functions */
 export const fetchCategoriesAsync = createAsyncThunk<
   CategoryArray,
   undefined,
@@ -28,7 +33,22 @@ export const fetchCategoriesAsync = createAsyncThunk<
 const CategoriesSlice = createSlice({
   name: 'categories',
   initialState: INITIAL_STATE,
-  reducers: {},
+  // Saga Code
+  reducers: {
+    getCategoriesFetch: (state) => {
+      state.isLoading = true;
+    },
+    getCategoriesSuccess: (state, action: PayloadAction<CategoryArray>) => {
+      state.categories = action.payload;
+      state.isLoading = false;
+      state.error = undefined;
+    },
+    getCategoriesFailure: (state, action: PayloadAction<FirebaseError>) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+  },
+  // Thunk Code
   extraReducers: (builder) => {
     builder
       .addCase(fetchCategoriesAsync.pending, (state) => {
@@ -51,6 +71,12 @@ const CategoriesSlice = createSlice({
       });
   },
 });
+
+export const {
+  getCategoriesFetch,
+  getCategoriesSuccess,
+  getCategoriesFailure,
+} = CategoriesSlice.actions;
 
 export default CategoriesSlice.reducer;
 
