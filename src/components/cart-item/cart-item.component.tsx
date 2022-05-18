@@ -1,4 +1,5 @@
-import type { CartItemType } from 'context/cart.context';
+import { CartItemType } from 'store/cart/cart.slice';
+
 import './cart-item.styles.scss';
 
 const CartItem = ({
