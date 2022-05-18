@@ -3,6 +3,7 @@ import { useAppSelector } from 'store/hooks';
 import { selectCartItems, selectTotalPrice } from 'store/cart/cart.selectors';
 
 import './checkout.styles.scss';
+import Payment from 'components/payment/payment.component';
 
 const Checkout = ({}: CheckoutProps) => {
   const cartItems = useAppSelector(selectCartItems);
@@ -33,6 +34,8 @@ const Checkout = ({}: CheckoutProps) => {
       })}
 
       <span className="total">Total: ${totalPrice}</span>
+
+      <Payment />
     </div>
   );
 };
