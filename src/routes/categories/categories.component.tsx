@@ -1,18 +1,28 @@
 import CategoryPreview from 'components/category-preview/category-preview.component';
-import { useCategoriesContext } from 'context/categories.context';
+import Spinner from 'components/spinner/spinner.component';
+import {
+  selectCategoriesIsLoading,
+  selectCategoriesMap,
+} from 'store/categories/categories.selectors';
+import { useAppSelector } from 'store/hooks';
 
 const Categories = ({}: CategoriesProps) => {
-  const { categoriesMap } = useCategoriesContext();
+  const categoriesMap = useAppSelector(selectCategoriesMap);
+  const isLoading = useAppSelector(selectCategoriesIsLoading);
 
   return (
     <div className="categories-container">
-      {Object.keys(categoriesMap).map((title) => (
-        <CategoryPreview
-          key={title}
-          title={title}
-          products={categoriesMap[title]}
-        />
-      ))}
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        Object.keys(categoriesMap).map((title) => (
+          <CategoryPreview
+            key={title}
+            title={title}
+            products={categoriesMap[title]}
+          />
+        ))
+      )}
     </div>
   );
 };

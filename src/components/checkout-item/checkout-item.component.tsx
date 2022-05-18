@@ -1,17 +1,22 @@
-import { CartItemType, useCartContext } from 'context/cart.context';
+import { useAppDispatch } from 'store/hooks';
+import {
+  addItemToCart,
+  clearItemFromCart,
+  removeItemFromCart,
+  type CartItemType,
+} from 'store/cart/cart.slice';
 
 import './checkout-item.styles.scss';
 
 const CheckoutItem = ({ cartItem }: CheckoutItemProps) => {
+  const dispatch = useAppDispatch();
   const { name, imageUrl, price, quantity } = cartItem;
-  const { addItemToCart, removeItemFromCart, clearItemFromCart } =
-    useCartContext();
 
-  const addItemHandler = () => addItemToCart(cartItem);
+  const addItemHandler = () => dispatch(addItemToCart(cartItem));
 
-  const removeItemHandler = () => removeItemFromCart(cartItem);
+  const removeItemHandler = () => dispatch(removeItemFromCart(cartItem));
 
-  const clearItemHandler = () => clearItemFromCart(cartItem);
+  const clearItemHandler = () => dispatch(clearItemFromCart(cartItem));
 
   return (
     <div className="checkout-item-container">

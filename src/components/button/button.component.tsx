@@ -15,9 +15,11 @@ const Button = ({
   return (
     <button
       className={`button-container ${BUTTON_TYPE_CLASSES[buttonType]}`}
+      style={{ cursor: isLoading ? 'not-allowed' : 'default' }}
+      disabled={isLoading}
       {...props}
     >
-      {children}
+      {isLoading ? <span className="button-spinner" /> : children}
     </button>
   );
 };
@@ -28,4 +30,4 @@ export default Button;
 export type ButtonProps = {
   buttonType?: keyof typeof BUTTON_TYPE_CLASSES;
   isLoading?: boolean;
-} & React.ComponentPropsWithoutRef<'button'>;
+} & Omit<React.ComponentPropsWithoutRef<'button'>, 'disabled'>;

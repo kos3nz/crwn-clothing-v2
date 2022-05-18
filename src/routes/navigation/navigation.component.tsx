@@ -1,17 +1,33 @@
 import { Link, Outlet } from 'react-router-dom';
-import { ReactComponent as CrwnLogo } from 'assets/crown.svg';
 
+import { ReactComponent as CrwnLogo } from 'assets/crown.svg';
 import CartIcon from 'components/cart-icon/cart-icon.component';
 import CartDropdown from 'components/cart-dropdown/cart-dropdown.component';
-import { useUserContext } from 'context/user.context';
-import { useCartContext } from 'context/cart.context';
-import { signOutUser } from 'utils/firebase/firebase.utils';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
+import { selectCurrentUser } from 'store/user/user.selectors';
+import { selectIsCartOpen } from 'store/cart/cart.selectors';
 
 import './navigation.styles.scss';
+import { signOut } from 'store/user/user.slice';
 
 const Navigation = ({}: NavigationProps) => {
-  const { currentUser } = useUserContext();
-  const { isCartOpen } = useCartContext();
+  const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(selectCurrentUser);
+  const isCartOpen = useAppSelector(selectIsCartOpen);
+
+  const onSignOutHandler = () => {
+    dispatch(signOut());
+  };
+
+  const userStatus = currentUser ? (
+    <span className="nav-link" onClick={onSignOutHandler}>
+      SIGN OUT
+    </span>
+  ) : (
+    <Link className="nav-link" to={'/auth'}>
+      SIGN IN
+    </Link>
+  );
 
   return (
     <>
@@ -23,15 +39,7 @@ const Navigation = ({}: NavigationProps) => {
           <Link className="nav-link" to={'/shop'}>
             SHOP
           </Link>
-          {currentUser ? (
-            <span className="nav-link" onClick={signOutUser}>
-              SIGN OUT
-            </span>
-          ) : (
-            <Link className="nav-link" to={'/auth'}>
-              SIGN IN
-            </Link>
-          )}
+          {currentUser !== undefined && userStatus}
           <CartIcon />
         </div>
         {isCartOpen && <CartDropdown />}

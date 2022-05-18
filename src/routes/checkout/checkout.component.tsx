@@ -1,11 +1,13 @@
 import CheckoutItem from 'components/checkout-item/checkout-item.component';
-import { useCartContext } from 'context/cart.context';
+import { useAppSelector } from 'store/hooks';
+import { selectCartItems, selectTotalPrice } from 'store/cart/cart.selectors';
 
 import './checkout.styles.scss';
+import Payment from 'components/payment/payment.component';
 
 const Checkout = ({}: CheckoutProps) => {
-  const { cartItems, addItemToCart, removeItemFromCart, totalPrice } =
-    useCartContext();
+  const cartItems = useAppSelector(selectCartItems);
+  const totalPrice = useAppSelector(selectTotalPrice);
 
   return (
     <div className="checkout-container">
@@ -32,6 +34,8 @@ const Checkout = ({}: CheckoutProps) => {
       })}
 
       <span className="total">Total: ${totalPrice}</span>
+
+      <Payment />
     </div>
   );
 };

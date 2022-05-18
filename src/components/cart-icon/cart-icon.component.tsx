@@ -1,16 +1,20 @@
 import { ReactComponent as ShoppingIcon } from 'assets/shopping-bag.svg';
-import { useCartContext } from 'context/cart.context';
+import { selectCartCount } from 'store/cart/cart.selectors';
+import { toggleCartDropdown } from 'store/cart/cart.slice';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
 
 import './cart-icon.styles.scss';
 
-// Types
-export type CartIconProps = {};
+const CartIcon = () => {
+  const dispatch = useAppDispatch();
+  const cartCount = useAppSelector(selectCartCount);
 
-const CartIcon = ({}: CartIconProps) => {
-  const { toggleDropdown, cartCount } = useCartContext();
+  const handleToggleDropdown = () => {
+    dispatch(toggleCartDropdown());
+  };
 
   return (
-    <button className="cart-icon-container" onClick={toggleDropdown}>
+    <button className="cart-icon-container" onClick={handleToggleDropdown}>
       <ShoppingIcon className="shopping-icon" />
       <span className="item-count">{cartCount}</span>
     </button>

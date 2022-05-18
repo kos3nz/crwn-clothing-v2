@@ -5,12 +5,12 @@ import FormInput from 'components/form/input/input.component';
 import Button from 'components/button/button.component';
 import './sign-in.styles.scss';
 
-import {
-  signInAuthUserWithEmailAndPassword,
-  signInWithGooglePopup,
-} from 'utils/firebase/firebase.utils';
+import { useAppDispatch } from 'store/hooks';
+import { emailSignIn, googleSignIn } from 'store/user/user.slice';
 
 const Signin = ({}: SigninProps) => {
+  const dispatch = useAppDispatch();
+
   const [formField, setFormField] = useState(defaultFormFields);
   const { email, password } = formField;
 
@@ -24,14 +24,9 @@ const Signin = ({}: SigninProps) => {
     event.preventDefault();
 
     try {
-      const response = await signInAuthUserWithEmailAndPassword(
-        email,
-        password
-      );
+      dispatch(emailSignIn({ email: email.trim(), password: password.trim() }));
 
-      if (response) {
-        resetFormFields();
-      }
+      resetFormFields();
     } catch (err) {
       const error = err as Error | FirebaseError;
 
@@ -55,7 +50,7 @@ const Signin = ({}: SigninProps) => {
   };
 
   const signinWithGoogle = async () => {
-    await signInWithGooglePopup();
+    dispatch(googleSignIn());
   };
 
   const resetFormFields = () => {
