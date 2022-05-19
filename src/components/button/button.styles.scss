@@ -1,3 +1,5 @@
+@use '/src/components/spinner/spinner.styles' as s;
+
 .button-container {
   min-width: 165px;
   width: auto;
@@ -14,6 +16,7 @@
   cursor: pointer;
   display: flex;
   justify-content: center;
+  align-items: center;
 
   &:hover {
     background-color: white;
@@ -41,5 +44,11 @@
       color: white;
       border: none;
     }
+  }
+
+  .button-spinner {
+    @include s.spinner;
+    width: 30px;
+    height: 30px;
   }
 }
