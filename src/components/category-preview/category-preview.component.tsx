@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import ProductCard from 'components/product-card/product-card.component';
-import type { Product } from 'context/categories.context';
+import type { Product } from 'store/categories/categories.slice';
 
 import './category-preview.styles.scss';
 
