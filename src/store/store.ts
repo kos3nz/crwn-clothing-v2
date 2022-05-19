@@ -12,6 +12,7 @@ import {
   PURGE,
   REGISTER,
   REHYDRATE,
+  PersistConfig,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import logger from 'redux-logger';
@@ -38,7 +39,7 @@ export const rootReducer = combineReducers({
   cart: cartReducer,
 });
 
-const persistConfig = {
+const persistConfig: ExtendedPersistConfig = {
   key: 'root',
   storage,
   whitelist: ['cart'],
@@ -65,3 +66,9 @@ sagaMiddleware.run(rootSaga);
 /* Types */
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+type RootReducer = ReturnType<typeof rootReducer>;
+
+type ExtendedPersistConfig = PersistConfig<RootReducer> & {
+  whitelist: (keyof RootReducer)[];
+};
