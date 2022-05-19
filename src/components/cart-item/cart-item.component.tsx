@@ -1,4 +1,4 @@
-import { CartItemType } from 'store/cart/cart.slice';
+import type { CartItemType } from 'store/cart/cart.slice';
 
 import './cart-item.styles.scss';
 

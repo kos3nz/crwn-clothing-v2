@@ -90,9 +90,9 @@ export default userSlice.reducer;
 
 /* Types */
 export type UserState = {
-  currentUser: UserPayload | null | undefined;
-  isLoading: boolean;
-  error: Error | FirebaseError | undefined;
+  readonly currentUser: UserPayload | null | undefined;
+  readonly isLoading: boolean;
+  readonly error: Error | FirebaseError | undefined;
 };
 
 export type UserPayload = {

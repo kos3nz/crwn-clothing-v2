@@ -83,9 +83,9 @@ export default CategoriesSlice.reducer;
 /* Types */
 
 export type CategoriesState = {
-  categories: CategoryArray;
-  isLoading: boolean;
-  error: Error | FirebaseError | undefined;
+  readonly categories: CategoryArray;
+  readonly isLoading: boolean;
+  readonly error: Error | FirebaseError | undefined;
 };
 
 export type CategoryArray = Category[];
