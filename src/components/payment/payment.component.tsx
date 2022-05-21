@@ -9,10 +9,6 @@ import './payment.styles.scss';
 import { selectTotalPrice } from 'store/cart/cart.selectors';
 import { selectCurrentUser } from 'store/user/user.selectors';
 
-const isValidCardElement = (
-  card: StripeCardElement | null
-): card is StripeCardElement => card !== null;
-
 const Payment = ({}: PaymentProps) => {
   const amount = useAppSelector(selectTotalPrice);
   const currentUser = useAppSelector(selectCurrentUser);
@@ -25,6 +21,8 @@ const Payment = ({}: PaymentProps) => {
   const paymentHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Stripe.js has not yet loaded.
+    // Make sure to disable form submission until Stripe.js has loaded.
     if (!stripe || !elements) return;
 
     setIsProcessing(true);
@@ -69,7 +67,18 @@ const Payment = ({}: PaymentProps) => {
     <div className="payment-container ">
       <form className="payment-form-container" onSubmit={paymentHandler}>
         <h2 style={{ marginBottom: '20px' }}>Credit Card Payment: </h2>
-        <CardElement />
+        <CardElement
+          options={{
+            style: {
+              base: {
+                fontSize: '18px',
+                '::placeholder': { color: '#87bbfd  ' },
+              },
+              invalid: { color: '#f87171', iconColor: '#f87171' },
+            },
+            hidePostalCode: true,
+          }}
+        />
         <Button
           buttonType="inverted"
           type="submit"
@@ -87,3 +96,8 @@ export default Payment;
 
 /* Types */
 export type PaymentProps = {};
+
+/* Helper Function */
+const isValidCardElement = (
+  card: StripeCardElement | null
+): card is StripeCardElement => card !== null;
